@@ -22,19 +22,19 @@ public class RankedQuickUnionUF {
         int qRoot = root(q);
         if (pRoot == qRoot) return;
 
-        int pRootSize = height[pRoot];
-        int qRootSize = height[qRoot];
-        if (pRootSize < qRootSize) {
+        int pRootHeight = height[pRoot];
+        int qRootHeight = height[qRoot];
+        if (pRootHeight < qRootHeight) {
             parent[pRoot] = qRoot;
-            int newTreeSize = pRootSize + 1;
-            if (newTreeSize > qRootSize) {
-                height[qRoot] = newTreeSize;
+            int newBranchHeight = pRootHeight + 1;
+            if (newBranchHeight > qRootHeight) {
+                height[qRoot] = newBranchHeight;
             }
         } else {
             parent[qRoot] = pRoot;
-            int newTreeSize = qRootSize + 1;
-            if (newTreeSize > pRootSize) {
-                height[pRoot] = newTreeSize;
+            int newBranchHeight = qRootHeight + 1;
+            if (newBranchHeight > pRootHeight) {
+                height[pRoot] = newBranchHeight;
             }
         }
         System.out.println("parent	--> " + Arrays.toString(this.parent));
