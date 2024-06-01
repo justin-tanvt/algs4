@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
 
@@ -12,8 +11,8 @@ public class RankedQuickUnionUF {
         this.parent = new int[N];
         this.height = new int[N];
         for (int i = 0; i < N; i++) {
-            parent[i] = i;
-            height[i] = 1;
+            this.parent[i] = i;
+            this.height[i] = 1;
         }
     }
 
@@ -53,6 +52,7 @@ public class RankedQuickUnionUF {
     }
 
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
         int N = StdIn.readInt();
         RankedQuickUnionUF uf = new RankedQuickUnionUF(N);
         while (!StdIn.isEmpty()) {
@@ -60,8 +60,10 @@ public class RankedQuickUnionUF {
             int q = StdIn.readInt();
             if (uf.connected(p, q)) continue;
             uf.union(p, q);
-            StdOut.println(p + " " + q);
         }
+        long endTime = System.nanoTime();
+        long elapsedMilli = (endTime - startTime) / 1000000;
+        System.out.println("RankedQuickUnionUF computation took " + elapsedMilli + "ms");
     }
 
 }

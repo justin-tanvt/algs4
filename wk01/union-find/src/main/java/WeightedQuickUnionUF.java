@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
 
@@ -29,9 +28,8 @@ public class WeightedQuickUnionUF {
             parent[qRoot] = pRoot;
             size[pRoot] += size[qRoot];
         }
-
-        System.out.println("parent  --> " + Arrays.toString(parent));
-        System.out.println("size    --> " + Arrays.toString(size));
+        System.out.println("parent  --> " + Arrays.toString(this.parent));
+        System.out.println("size    --> " + Arrays.toString(this.size));
     }
 
     public boolean connected(int p, int q) {
@@ -46,6 +44,7 @@ public class WeightedQuickUnionUF {
     }
 
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
         int N = StdIn.readInt();
         WeightedQuickUnionUF uf = new WeightedQuickUnionUF(N);
         while (!StdIn.isEmpty()) {
@@ -53,8 +52,10 @@ public class WeightedQuickUnionUF {
             int q = StdIn.readInt();
             if (uf.connected(p, q)) continue;
             uf.union(p, q);
-            StdOut.println(p + " " + q);
         }
+        long endTime = System.nanoTime();
+        long elapsedMilli = (endTime - startTime) / 1000000;
+        System.out.println("WeightedQuickUnionUF computation took " + elapsedMilli + "ms");
     }
 
 }

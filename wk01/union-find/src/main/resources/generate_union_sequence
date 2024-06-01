@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+NUMBER_OF_NODES=$1
+NUMBER_OF_UNION_SEQUENCES=$2
+if [[ -z "${NUMBER_OF_NODES}" || -z "${NUMBER_OF_UNION_SEQUENCES}" ]]; then
+  exit 1
+fi
+
+MIN_NODE_INDEX=0
+MAX_NODE_INDEX="$(( NUMBER_OF_NODES - 1 ))"
+
+random_int() {
+  local min=$1
+  local max=$2
+  if [[ -z $1 || -z $2 ]]; then
+    return 1;
+  fi
+
+  if jot -r 1 "${min}" "${max}"; then
+    return 0
+  else
+    echo 'FATAL: random_int function failure!'
+    return 2
+  fi
+}
+
+generate_union() {
+  local min_node_idx=$1
+  local max_node_idx=$2
+  if [[ -z $1 || -z $2 ]]; then
+    return 1;
+  fi
+
+  local MAX_TRIES=10
+  local tries=0
+  while true; do
+	  local node1="$(random_int "${min_node_idx}" "${max_node_idx}")"
+	  local node2="$(random_int "${min_node_idx}" "${max_node_idx}")"
+    (( tries += 1 ))
+
+    if (( node1 != node2 )); then
+      echo "${node1} ${node2}"
+      return 0
+    fi
+
+    if (( tries == MAX_TRIES )); then
+      echo 'FATAL: generate_union function reached max tries!'
+      return 2
+    fi
+  done
+}
+
+runid="$(date +%s)"
+output_file="uf_inputdata_${NUMBER_OF_NODES}NOD_${NUMBER_OF_UNION_SEQUENCES}SEQ_${runid}.txt"
+
+echo "${NUMBER_OF_NODES}" > "${output_file}"
+for ((s = 0 ; s < "${NUMBER_OF_UNION_SEQUENCES}" ; s++ )); do
+  union_command="$(generate_union "${MIN_NODE_INDEX}" "${MAX_NODE_INDEX}")"
+  if (( $? != 0 )); then
+    echo 'FATAL: Internal error occurred!'
+    echo 'Initiating program shutdown...'
+    rm --force --verbose "${output_file}"
+    exit 1
+  fi
+  echo "${union_command}" >> "${output_file}"
+done
