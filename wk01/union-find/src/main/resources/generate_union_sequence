@@ -2,12 +2,9 @@
 
 NUMBER_OF_NODES=$1
 NUMBER_OF_UNION_SEQUENCES=$2
-if [[ -z "${NUMBER_OF_NODES}" || -z "${NUMBER_OF_UNION_SEQUENCES}" ]]; then
+if [[ -z "$1" || -z "$2" ]]; then
   exit 1
 fi
-
-MIN_NODE_INDEX=0
-MAX_NODE_INDEX="$(( NUMBER_OF_NODES - 1 ))"
 
 random_int() {
   local min=$1
@@ -34,11 +31,12 @@ generate_union() {
   local MAX_TRIES=10
   local tries=0
   while true; do
-	  local node1="$(random_int "${min_node_idx}" "${max_node_idx}")"
-	  local node2="$(random_int "${min_node_idx}" "${max_node_idx}")"
     (( tries += 1 ))
+    local node1 node2
+	  node1="$(random_int "${min_node_idx}" "${max_node_idx}")"
+	  node2="$(random_int "${min_node_idx}" "${max_node_idx}")"
 
-    if (( node1 != node2 )); then
+    if [[ -n "${node1}" && -n "${node2}" && "${node1}" != "${node2}" ]]; then
       echo "${node1} ${node2}"
       return 0
     fi
@@ -50,17 +48,22 @@ generate_union() {
   done
 }
 
+MIN_NODE_INDEX=0
+MAX_NODE_INDEX="$(( NUMBER_OF_NODES - 1 ))"
+
 runid="$(date +%s)"
 output_file="uf_inputdata_${NUMBER_OF_NODES}NOD_${NUMBER_OF_UNION_SEQUENCES}SEQ_${runid}.txt"
 
 echo "${NUMBER_OF_NODES}" > "${output_file}"
+
 for ((s = 0 ; s < "${NUMBER_OF_UNION_SEQUENCES}" ; s++ )); do
-  union_command="$(generate_union "${MIN_NODE_INDEX}" "${MAX_NODE_INDEX}")"
-  if (( $? != 0 )); then
+  if ! generated_union="$(generate_union "${MIN_NODE_INDEX}" "${MAX_NODE_INDEX}")"; then
     echo 'FATAL: Internal error occurred!'
     echo 'Initiating program shutdown...'
     rm --force --verbose "${output_file}"
     exit 1
   fi
-  echo "${union_command}" >> "${output_file}"
+  echo "${generated_union}" >> "${output_file}"
 done
+
+exit 0
