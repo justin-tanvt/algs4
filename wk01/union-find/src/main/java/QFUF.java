@@ -3,11 +3,11 @@ import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
 
-public class QuickFindUF {
+public class QFUF {
 
     int[] id;
 
-    public QuickFindUF(int N) {
+    public QFUF(int N) {
         this.id = new int[N];
         for (int i = 0; i < N; i++) {
             id[i] = i;
@@ -20,7 +20,6 @@ public class QuickFindUF {
         for (int i = 0; i < id.length; i++) {
             if (id[i] == qid) id[i] = pid;
         }
-        System.out.println(Arrays.toString(this.id));
     }
 
     public boolean connected(int p, int q) {
@@ -28,15 +27,22 @@ public class QuickFindUF {
     }
 
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
+
         int N = StdIn.readInt();
-        QuickFindUF uf = new QuickFindUF(N);
+        QFUF uf = new QFUF(N);
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();
             if (uf.connected(p, q)) continue;
             uf.union(p, q);
-            StdOut.println(p + " " + q);
         }
+
+        long endTime = System.nanoTime();
+        long elapsedMilli = (endTime - startTime) / 1000000;
+        System.out.println("Quick Find Union-Find computation took " + elapsedMilli + "ms");
+
+//        System.out.println("id	--> " + Arrays.toString(uf.id));
     }
 
 }

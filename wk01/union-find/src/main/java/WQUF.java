@@ -2,12 +2,12 @@ import edu.princeton.cs.algs4.StdIn;
 
 import java.util.Arrays;
 
-public class WeightedQuickUnionUF {
+public class WQUF {
 
     private final int[] parent;
     private final int[] size;
 
-    public WeightedQuickUnionUF(int N) {
+    public WQUF(int N) {
         this.parent = new int[N];
         this.size = new int[N];
         for (int i = 0; i < N; i++) {
@@ -17,19 +17,17 @@ public class WeightedQuickUnionUF {
     }
 
     public void union(int p, int q) {
-        int pRoot = root(p);
-        int qRoot = root(q);
-        if (pRoot == qRoot) return;
+        int rootP = root(p);
+        int rootQ = root(q);
+        if (rootP == rootQ) return;
 
-        if (size[pRoot] < size[qRoot]) {
-            parent[pRoot] = qRoot;
-            size[qRoot] += size[pRoot];
+        if (size[rootP] < size[rootQ]) {
+            parent[rootP] = rootQ;
+            size[rootQ] += size[rootP];
         } else {
-            parent[qRoot] = pRoot;
-            size[pRoot] += size[qRoot];
+            parent[rootQ] = rootP;
+            size[rootP] += size[rootQ];
         }
-        System.out.println("parent  --> " + Arrays.toString(this.parent));
-        System.out.println("size    --> " + Arrays.toString(this.size));
     }
 
     public boolean connected(int p, int q) {
@@ -45,17 +43,22 @@ public class WeightedQuickUnionUF {
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
+
         int N = StdIn.readInt();
-        WeightedQuickUnionUF uf = new WeightedQuickUnionUF(N);
+        WQUF uf = new WQUF(N);
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();
             if (uf.connected(p, q)) continue;
             uf.union(p, q);
         }
+
         long endTime = System.nanoTime();
         long elapsedMilli = (endTime - startTime) / 1000000;
-        System.out.println("WeightedQuickUnionUF computation took " + elapsedMilli + "ms");
+        System.out.println("Weighted Quick Union-Find computation took " + elapsedMilli + "ms");
+
+//        System.out.println("parent	--> " + Arrays.toString(uf.parent));
+//        System.out.println("depth  --> " + Arrays.toString(uf.size));
     }
 
 }
