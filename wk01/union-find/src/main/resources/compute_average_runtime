@@ -3,7 +3,7 @@
 RUNS=50
 INPUT_DATA='uf_inputdata_20000NOD_20000SEQ_1722048887.txt'
 ALGS4_LIB="${HOME}/Developer/Repo/algs4/lib/algs4.jar"
-ALGO_CLASS='WQUF.java'
+ALGO_CLASS='QUPCUF.java'
 
 total_runtime=0
 for ((i=1; i<="${RUNS}"; i++)); do

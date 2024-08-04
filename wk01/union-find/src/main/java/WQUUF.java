@@ -1,13 +1,11 @@
 import edu.princeton.cs.algs4.StdIn;
 
-import java.util.Arrays;
-
-public class WQUF {
+public class WQUUF {
 
     private final int[] parent;
     private final int[] size;
 
-    public WQUF(int N) {
+    public WQUUF(int N) {
         this.parent = new int[N];
         this.size = new int[N];
         for (int i = 0; i < N; i++) {
@@ -45,7 +43,7 @@ public class WQUF {
         long startTime = System.nanoTime();
 
         int N = StdIn.readInt();
-        WQUF uf = new WQUF(N);
+        WQUUF uf = new WQUUF(N);
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();

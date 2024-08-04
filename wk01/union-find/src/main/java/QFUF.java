@@ -1,7 +1,4 @@
 import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
-
-import java.util.Arrays;
 
 public class QFUF {
 
@@ -15,10 +12,10 @@ public class QFUF {
     }
 
     public void union(int p, int q) {
-        int qid = id[p];
-        int pid = id[q];
+        int pid = id[p];
+        int qid = id[q];
         for (int i = 0; i < id.length; i++) {
-            if (id[i] == qid) id[i] = pid;
+            if (id[i] == pid) id[i] = qid;
         }
     }
 

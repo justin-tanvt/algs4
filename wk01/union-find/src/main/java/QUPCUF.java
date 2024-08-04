@@ -2,19 +2,19 @@ import edu.princeton.cs.algs4.StdIn;
 
 public class QUPCUF {
 
-    int[] id;
+    int[] parent;
 
     public QUPCUF(int N) {
-        this.id = new int[N];
+        this.parent = new int[N];
         for (int i = 0; i < N; i++) {
-            id[i] = i;
+            parent[i] = i;
         }
     }
 
     public void union(int p, int q) {
         int proot = root(p);
         int qroot = root(q);
-        id[proot] = qroot;
+        parent[proot] = qroot;
     }
 
     public boolean connected(int p, int q) {
@@ -22,7 +22,15 @@ public class QUPCUF {
     }
 
     private int root(int i) {
-        while (id[i] != i) i = id[i];
+        int root = i;
+        while (parent[root] != root) {
+            root = parent[root];                // trace links until reach root (i.e. node is its own parent)
+        }
+        while (i != root) {                     // loop through all child nodes along the link
+            int oldParrent = parent[i];         // remember current node's parent before overriding
+            parent[i] = root;                   // override current node's parent with root
+            i = oldParrent;                     // move on to next node (i.e. current node's parent)
+        }
         return i;
     }
 

@@ -1,13 +1,11 @@
 import edu.princeton.cs.algs4.StdIn;
 
-import java.util.Arrays;
-
-public class RQUF {
+public class RQUUF {
 
     private final int[] parent;
     private final int[] depth;
 
-    public RQUF(int N) {
+    public RQUUF(int N) {
         this.parent = new int[N];
         this.depth = new int[N];
         for (int i = 0; i < N; i++) {
@@ -53,7 +51,7 @@ public class RQUF {
         long startTime = System.nanoTime();
 
         int N = StdIn.readInt();
-        RQUF uf = new RQUF(N);
+        RQUUF uf = new RQUUF(N);
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();
