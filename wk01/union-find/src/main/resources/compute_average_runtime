@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-RUNS=100
+RUNS=150
 INPUT_DATA='uf_inputdata_20000NOD_20000SEQ_1722048887.txt'
 ALGS4_LIB="${HOME}/Developer/Repo/algs4/lib/algs4.jar"
-ALGO_CLASS='WQUUF.java'
+ALGO_CLASS='WQURPCUF.java'
 
 bar_size=40
 bar_char_done="#"
