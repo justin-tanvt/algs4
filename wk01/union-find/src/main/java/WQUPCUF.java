@@ -1,11 +1,11 @@
 import edu.princeton.cs.algs4.StdIn;
 
-public class WQUUF {
+public class WQUPCUF {
 
     private final int[] parent;
     private final int[] size;
 
-    public WQUUF(int N) {
+    public WQUPCUF(int N) {
         this.parent = new int[N];
         this.size = new int[N];
         for (int i = 0; i < N; i++) {
@@ -33,8 +33,14 @@ public class WQUUF {
     }
 
     private int root(int i) {
-        while (parent[i] != i) {
-            i = parent[i];
+        int root = i;
+        while (parent[root] != root) {
+            root = parent[root];                // trace links until reach root (i.e. node is its own parent)
+        }
+        while (i != root) {                     // loop through all child nodes along the link
+            int oldParent = parent[i];          // remember current node's parent before overriding
+            parent[i] = root;                   // set current node's parent to root
+            i = oldParent;                      // move on to next node (i.e. current node's parent)
         }
         return i;
     }
@@ -43,7 +49,7 @@ public class WQUUF {
         long startTime = System.nanoTime();
 
         int N = StdIn.readInt();
-        WQUUF uf = new WQUUF(N);
+        WQUPCUF uf = new WQUPCUF(N);
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();

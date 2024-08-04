@@ -27,9 +27,9 @@ public class QUPCUF {
             root = parent[root];                // trace links until reach root (i.e. node is its own parent)
         }
         while (i != root) {                     // loop through all child nodes along the link
-            int oldParrent = parent[i];         // remember current node's parent before overriding
-            parent[i] = root;                   // override current node's parent with root
-            i = oldParrent;                     // move on to next node (i.e. current node's parent)
+            int oldParent = parent[i];          // remember current node's parent before overriding
+            parent[i] = root;                   // set current node's parent to root
+            i = oldParent;                      // move on to next node (i.e. current node's parent)
         }
         return i;
     }
