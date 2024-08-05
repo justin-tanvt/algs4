@@ -1,0 +1,31 @@
+function Connected(x, y) is
+    x.component := Find(x)
+    y.component := Find(y)
+    return x.component == y.component
+end function
+
+function FullyConnectedAt(logfile) is
+    components := n
+    while components != 1 do
+        (x, y) := logfile.next
+        if Connected(x, y) then
+            continue
+        end if
+        Union(x, y)
+        components := components - 1
+    end while
+    return logfile.current.timestamp
+end function
+
+The FullyConnectedAt algorithm would take in a logfile with m timestamped union
+ops as its input, and return the timestamp at which all members are connected.
+It works by keeping count of the number of components (or sets or social
+networks), looping through the union ops in the logfile until the number of
+components is 1 (i.e. there is only 1 social network, all members are connected
+to each other). For each union op, the Connected function is called once (i.e.
+2 Find function calls) and, if the nodes are not connected, the Union function
+is then called once. This means, at the worst case, there are 2 Find and 1 Union
+calls (i.e. 3 union/find ops) multiplied by m timestamps in the logfile. By
+implementing WQUPCUF, the algorithm would run with 3 * (n + m lg* n) time
+complexity, which simplifies to (n + m lg* n). It would also need 2 arrays of
+length n to track parent and weight, which is proportional to n.
