@@ -3,6 +3,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Percolation {
 
@@ -29,19 +30,18 @@ public class Percolation {
         // initialise union-find data structure with (n*n) real sites followed by 2 virtual sites (top then bottom)
         // percolation computed by checking if top and bottom virtual sites are in same set (i.e. connected)
         int realAndVirtualSiteCount = realSiteCount + 2;
+        topVirtualSiteIndex = realAndVirtualSiteCount - 2;          // second last index in UF data structure
         bottomVirtualSiteIndex = realAndVirtualSiteCount - 1;       // last index in UF data structure
-        topVirtualSiteIndex = bottomVirtualSiteIndex - 1;           // second last index in UF data structure
         this.uf = new WeightedQuickUnionUF(realAndVirtualSiteCount);
         this.openRealSiteCount = 0;
 
-        // connect top virtual site to real sites on top row
-        // connect bottom virtual site to real sites on bottom row
+        // connect virtual site to real sites on top and bottom rows
         for (int col = 1; col <= GRID_SIZE; col++) {
-            uf.union(topVirtualSiteIndex, siteIndexOf(1, col));
-            uf.union(bottomVirtualSiteIndex, siteIndexOf(GRID_SIZE, col));
+            uf.union(topVirtualSiteIndex, mapToSiteIndex(1, col));
+            uf.union(bottomVirtualSiteIndex, mapToSiteIndex(GRID_SIZE, col));
         }
 
-        reportStatus();
+        showGrid();
     }
 
     // opens the site (row, col) if it is not open already
@@ -51,28 +51,28 @@ public class Percolation {
             return;
         }
 
-        // for each adjacent site that is open, perform union & increment open real site count
-        int currentSiteIndex = siteIndexOf(row, col);
+        // for each adjacent site that is open, perform union with current site & increment open real site count
+        int currentSiteIndex = mapToSiteIndex(row, col);
         getAdjacentSites(row, col).stream().filter(site -> isOpen((int) site.x(), (int) site.y())).forEach(site -> {
-            int adjacentOpenSiteIndex = siteIndexOf((int) site.x(), (int) site.y());
+            int adjacentOpenSiteIndex = mapToSiteIndex((int) site.x(), (int) site.y());
             uf.union(currentSiteIndex, adjacentOpenSiteIndex);
             openRealSiteCount++;
         });
         sites[currentSiteIndex] = true;
 
-        reportStatus();
+        showGrid();
     }
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
         validateRange(row, col);
-        return sites[siteIndexOf(row, col)];
+        return sites[mapToSiteIndex(row, col)];
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
         validateRange(row, col);
-        return uf.find(topVirtualSiteIndex) == uf.find(siteIndexOf(row, col));
+        return uf.find(topVirtualSiteIndex) == uf.find(mapToSiteIndex(row, col));
     }
 
     // returns the number of open sites
@@ -101,65 +101,40 @@ public class Percolation {
         p.open(5, 5);
     }
 
+    // validate if given 2D array indices are within range of grid
     private void validateRange(int row, int col) {
         if (Math.min(row, col) < 1 || Math.max(row, col) > GRID_SIZE) {
             throw new IllegalArgumentException("Given row and column indices (" + row + ", " + col + ") not valid for grid size [" + GRID_SIZE + "]");
         }
     }
 
-    private int siteIndexOf(int row, int column) {
-        // map 2D array indices of range (1, 1) to (n, n) to 1D array index of range 0 to (n*n - 1)
+    // map 2D array indices of range (1, 1) to (n, n) to 1D array index of range 0 to (n*n - 1)
+    private int mapToSiteIndex(int row, int column) {
         return (row - 1) * GRID_SIZE + column - 1;
     }
 
+    // generate list of valid sites adjacent to site of given 2D array indices
     private List<Point2D> getAdjacentSites(int row, int column) {
+        // generate all possible adjacent sites
         ArrayList<Point2D> adjacentSites = new ArrayList<>();
-        int x, y;
+        adjacentSites.add(new Point2D(row - 1, column));    // above
+        adjacentSites.add(new Point2D(row + 1, column));    // below
+        adjacentSites.add(new Point2D(row, column - 1));    // left
+        adjacentSites.add(new Point2D(row, column + 1));    // right
 
-        // above
-        x = row - 1;
-        y = column;
-        try {
-            validateRange(x, y);
-            Point2D topSite = new Point2D(x, y);
-            adjacentSites.add(topSite);
-        } catch (IllegalArgumentException ignored) {
-        }
-
-        // right
-        x = row;
-        y = column + 1;
-        try {
-            validateRange(x, y);
-            Point2D topSite = new Point2D(x, y);
-            adjacentSites.add(topSite);
-        } catch (IllegalArgumentException ignored) {
-        }
-
-        // below
-        x = row + 1;
-        y = column;
-        try {
-            validateRange(x, y);
-            Point2D topSite = new Point2D(x, y);
-            adjacentSites.add(topSite);
-        } catch (IllegalArgumentException ignored) {
-        }
-
-        // left
-        x = row;
-        y = column - 1;
-        try {
-            validateRange(x, y);
-            Point2D topSite = new Point2D(x, y);
-            adjacentSites.add(topSite);
-        } catch (IllegalArgumentException ignored) {
-        }
-
-        return adjacentSites;
+        // filter for sites in valid range
+        return adjacentSites.stream().filter(site -> {
+            try {
+                validateRange((int) site.x(), (int) site.y());
+                return true;
+            } catch (IllegalArgumentException ignore) {
+            }
+            return false;
+        }).collect(Collectors.toList());
     }
 
-    private void reportStatus() {
+    // print out visual representation of grid and check percolation, for debugging only
+    private void showGrid() {
         for (int r = 1; r <= GRID_SIZE; r++) {
             for (int c = 1; c <= GRID_SIZE; c++) {
                 if (isFull(r, c)) {
